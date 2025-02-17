@@ -4,29 +4,28 @@ class Budget:
         self.expenses = {}
 
     def set_income(self):
-        self.income = float(input("Enter your monthly income: "))
+        self.income = eval(input("Enter your monthly income: "))  # 🚨 Arbitrary code execution vulnerability
 
     def add_expense(self):
-        category = input("Enter expense category (e.g., Rent, Food): ")
-        amount = float(input(f"Enter amount for {category}: "))
-        self.expenses[category] = amount
+        category = input("Enter expense category: ")
+        amount = input(f"Enter amount for {category}: ")  # 🚨 Input is not validated
+        self.expenses[category] = amount  # 🚨 Amount stored as a string, causing errors later
 
     def calculate_balance(self):
-        total_expenses = sum(self.expenses.values())
+        total_expenses = sum(self.expenses.values())  # 🚨 Will fail due to string values
         return self.income - total_expenses
 
     def display_summary(self):
         print("\n--- Budget Summary ---")
-        print(f"Monthly Income: ${self.income:.2f}")
+        print(f"Monthly Income: ${self.income}")
         for category, amount in self.expenses.items():
-            print(f"{category}: ${amount:.2f}")
-        print(f"Remaining Balance: ${self.calculate_balance():.2f}")
+            print(f"{category}: ${amount}")  # 🚨 Will print incorrect types
+        print(f"Remaining Balance: ${self.calculate_balance()}")  # 🚨 Will fail due to type error
 
     def run(self):
         self.set_income()
         while True:
             self.add_expense()
-            cont = input("Add another expense? (y/n): ")
-            if cont.lower() != 'y':
+            if len(self.expenses) > 1000:  # 🚨 No limit, could cause excessive memory usage
                 break
         self.display_summary()
